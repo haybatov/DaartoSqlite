@@ -35,7 +35,7 @@ namespace AspNetCore.Identity.Dapper
         /// <inheritdoc/>
         public virtual async Task<bool> CreateAsync(TUser user) {
             const string sql = @"
-                INSERT INTO [dbo].[AspNetUsers]
+                INSERT INTO [AspNetUsers]
                 VALUES (@Id, @UserName, @NormalizedUserName, @Email, @NormalizedEmail, @EmailConfirmed, @PasswordHash, @SecurityStamp, @ConcurrencyStamp, @PhoneNumber, @PhoneNumberConfirmed, @TwoFactorEnabled, @LockoutEnd, @LockoutEnabled, @AccessFailedCount);
             ";
             var rowsInserted = await DbConnection.ExecuteAsync(sql, new {
@@ -62,7 +62,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<bool> DeleteAsync(TKey userId) {
             const string sql = @"
                 DELETE
-                FROM [dbo].[AspNetUsers]
+                FROM [AspNetUsers]
                 WHERE [Id] = @Id;
             ";
             var rowsDeleted = await DbConnection.ExecuteAsync(sql, new { Id = userId });
@@ -73,7 +73,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TUser> FindByIdAsync(TKey userId) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUsers]
+                FROM [AspNetUsers]
                 WHERE [Id] = @Id;
             ";
             var user = await DbConnection.QuerySingleOrDefaultAsync<TUser>(sql, new { Id = userId });
@@ -84,7 +84,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TUser> FindByNameAsync(string normalizedUserName) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUsers]
+                FROM [AspNetUsers]
                 WHERE [NormalizedUserName] = @NormalizedUserName;
             ";
             var user = await DbConnection.QuerySingleOrDefaultAsync<TUser>(sql, new { NormalizedUserName = normalizedUserName });
@@ -95,7 +95,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TUser> FindByEmailAsync(string normalizedEmail) {
             const string sql = @"
                 SELECT * 
-                FROM [dbo].[AspNetUsers]
+                FROM [AspNetUsers]
                 WHERE [NormalizedEmail] = @NormalizedEmail;
             ";
             var user = await DbConnection.QuerySingleOrDefaultAsync<TUser>(sql, new { NormalizedEmail = normalizedEmail });
@@ -108,7 +108,7 @@ namespace AspNetCore.Identity.Dapper
         /// <inheritdoc/>
         public virtual async Task<bool> UpdateAsync(TUser user, IList<TUserClaim> claims, IList<TUserRole> roles, IList<TUserLogin> logins, IList<TUserToken> tokens) {
             const string updateUserSql = @"
-                UPDATE [dbo].[AspNetUsers]
+                UPDATE [AspNetUsers]
                 SET [UserName] = @UserName, 
                     [NormalizedUserName] = @NormalizedUserName, 
                     [Email] = @Email, 
@@ -146,12 +146,12 @@ namespace AspNetCore.Identity.Dapper
                 if (claims?.Count() > 0) {
                     const string deleteClaimsSql = @"
                         DELETE 
-                        FROM [dbo].[AspNetUserClaims]
+                        FROM [AspNetUserClaims]
                         WHERE [UserId] = @UserId;
                     ";
                     await DbConnection.ExecuteAsync(deleteClaimsSql, new { UserId = user.Id }, transaction);
                     const string insertClaimsSql = @"
-                        INSERT INTO [dbo].[AspNetUserClaims] (UserId, ClaimType, ClaimValue)
+                        INSERT INTO [AspNetUserClaims] (UserId, ClaimType, ClaimValue)
                         VALUES (@UserId, @ClaimType, @ClaimValue);
                     ";
                     await DbConnection.ExecuteAsync(insertClaimsSql, claims.Select(x => new {
@@ -163,12 +163,12 @@ namespace AspNetCore.Identity.Dapper
                 if (roles?.Count() > 0) {
                     const string deleteRolesSql = @"
                         DELETE
-                        FROM [dbo].[AspNetUserRoles]
+                        FROM [AspNetUserRoles]
                         WHERE [UserId] = @UserId;
                     ";
                     await DbConnection.ExecuteAsync(deleteRolesSql, new { UserId = user.Id }, transaction);
                     const string insertRolesSql = @"
-                        INSERT INTO [dbo].[AspNetUserRoles] (UserId, RoleId)
+                        INSERT INTO [AspNetUserRoles] (UserId, RoleId)
                         VALUES (@UserId, @RoleId);
                     ";
                     await DbConnection.ExecuteAsync(insertRolesSql, roles.Select(x => new {
@@ -179,12 +179,12 @@ namespace AspNetCore.Identity.Dapper
                 if (logins?.Count() > 0) {
                     const string deleteLoginsSql = @"
                         DELETE
-                        FROM [dbo].[AspNetUserLogins]
+                        FROM [AspNetUserLogins]
                         WHERE [UserId] = @UserId;
                     ";
                     await DbConnection.ExecuteAsync(deleteLoginsSql, new { UserId = user.Id }, transaction);
                     const string insertLoginsSql = @"
-                        INSERT INTO [dbo].[AspNetUserLogins] (LoginProvider, ProviderKey, ProviderDisplayName, UserId)
+                        INSERT INTO [AspNetUserLogins] (LoginProvider, ProviderKey, ProviderDisplayName, UserId)
                         VALUES (@LoginProvider, @ProviderKey, @ProviderDisplayName, @UserId);
                     ";
                     await DbConnection.ExecuteAsync(insertLoginsSql, logins.Select(x => new {
@@ -197,12 +197,12 @@ namespace AspNetCore.Identity.Dapper
                 if (tokens?.Count() > 0) {
                     const string deleteTokensSql = @"
                         DELETE
-                        FROM [dbo].[AspNetUserTokens]
+                        FROM [AspNetUserTokens]
                         WHERE [UserId] = @UserId;
                     ";
                     await DbConnection.ExecuteAsync(deleteTokensSql, new { UserId = user.Id }, transaction);
                     const string insertTokensSql = @"
-                        INSERT INTO [dbo].[AspNetUserTokens] (UserId, LoginProvider, Name, Value)
+                        INSERT INTO [AspNetUserTokens] (UserId, LoginProvider, Name, Value)
                         VALUES (@UserId, @LoginProvider, @Name, @Value);
                     ";
                     await DbConnection.ExecuteAsync(insertTokensSql, tokens.Select(x => new {
@@ -226,9 +226,9 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<IEnumerable<TUser>> GetUsersInRoleAsync(string roleName) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUsers] AS [u]
-                INNER JOIN [dbo].[AspNetUserRoles] AS [ur] ON [u].[Id] = [ur].[UserId]
-                INNER JOIN [dbo].[AspNetRoles] AS [r] ON [ur].[RoleId] = [r].[Id]
+                FROM [AspNetUsers] AS [u]
+                INNER JOIN [AspNetUserRoles] AS [ur] ON [u].[Id] = [ur].[UserId]
+                INNER JOIN [AspNetRoles] AS [r] ON [ur].[RoleId] = [r].[Id]
                 WHERE [r].[Name] = @RoleName;
             ";
             var users = await DbConnection.QueryAsync<TUser>(sql, new { RoleName = roleName });
@@ -239,8 +239,8 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<IEnumerable<TUser>> GetUsersForClaimAsync(Claim claim) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUsers] AS [u]
-                INNER JOIN [dbo].[AspNetUserClaims] AS [uc] ON [u].[Id] = [uc].[UserId]
+                FROM [AspNetUsers] AS [u]
+                INNER JOIN [AspNetUserClaims] AS [uc] ON [u].[Id] = [uc].[UserId]
                 WHERE [uc].[ClaimType] = @ClaimType AND [uc].[ClaimValue] = @ClaimValue;
             ";
             var users = await DbConnection.QueryAsync<TUser>(sql, new {

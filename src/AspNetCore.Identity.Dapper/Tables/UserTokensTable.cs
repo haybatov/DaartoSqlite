@@ -26,7 +26,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<IEnumerable<TUserToken>> GetTokensAsync(TKey userId) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUserTokens]
+                FROM [AspNetUserTokens]
                 WHERE [UserId] = @UserId;
             ";
             var userTokens = await DbConnection.QueryAsync<TUserToken>(sql, new { UserId = userId });
@@ -37,7 +37,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TUserToken> FindTokenAsync(TKey userId, string loginProvider, string name) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUserTokens]
+                FROM [AspNetUserTokens]
                 WHERE [UserId] = @UserId AND [LoginProvider] = @LoginProvider AND [Name] = @Name;
             ";
             var token = await DbConnection.QuerySingleOrDefaultAsync<TUserToken>(sql, new {

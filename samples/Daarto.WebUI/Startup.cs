@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authentication.Google;
+using System;
+
 
 namespace Daarto.WebUI
 {
@@ -28,6 +31,12 @@ namespace Daarto.WebUI
             .AddDefaultTokenProviders();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = Configuration["Google:ClientId"] ?? throw new InvalidOperationException("Google:ClientId is missing from configuration.");
+                    options.ClientSecret = Configuration["Google:ClientSecret"] ?? throw new InvalidOperationException("Google:ClientSecret is missing from configuration.");
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment environment) {

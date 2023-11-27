@@ -32,7 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var dbConnectionContextOptions = new DapperStoreOptions {
                 ConnectionString = configuration.GetConnectionString("DefaultConnection"),
-                DbConnectionFactory = new SqlServerDbConnectionFactory(),
+                DbConnectionFactory = new SqliteDbConnectionFactory(),
                 Services = services
             };
             configureAction?.Invoke(dbConnectionContextOptions);

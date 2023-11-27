@@ -28,8 +28,8 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<IEnumerable<TRole>> GetRolesAsync(TKey userId) {
             const string sql = @"
                 SELECT [r].*
-                FROM [dbo].[AspNetRoles] AS [r]
-                INNER JOIN [dbo].[AspNetUserRoles] AS [ur] ON [ur].[RoleId] = [r].[Id]
+                FROM [AspNetRoles] AS [r]
+                INNER JOIN [AspNetUserRoles] AS [ur] ON [ur].[RoleId] = [r].[Id]
                 WHERE [ur].[UserId] = @UserId;
             ";
             var userRoles = await DbConnection.QueryAsync<TRole>(sql, new { UserId = userId });
@@ -40,7 +40,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TUserRole> FindUserRoleAsync(TKey userId, TKey roleId) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUserRoles]
+                FROM [AspNetUserRoles]
                 WHERE [UserId] = @UserId AND [RoleId] = @RoleId;
             ";
             var userRole = await DbConnection.QuerySingleOrDefaultAsync<TUserRole>(sql, new {

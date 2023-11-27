@@ -28,7 +28,7 @@ namespace AspNetCore.Identity.Dapper
         /// <inheritdoc/>
         public virtual async Task<bool> CreateAsync(TRole role) {
             const string sql = @"
-                INSERT INTO [dbo].[AspNetRoles]
+                INSERT INTO [AspNetRoles]
                 VALUES (@Id, @Name, @NormalizedName, @ConcurrencyStamp);
             ";
             var rowsInserted = await DbConnection.ExecuteAsync(sql, new {
@@ -44,7 +44,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<bool> DeleteAsync(TKey roleId) {
             const string sql = @"
                 DELETE
-                FROM [dbo].[AspNetRoles]
+                FROM [AspNetRoles]
                 WHERE [Id] = @Id;
             ";
             var rowsDeleted = await DbConnection.ExecuteAsync(sql, new { Id = roleId });
@@ -55,7 +55,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TRole> FindByIdAsync(TKey roleId) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetRoles]
+                FROM [AspNetRoles]
                 WHERE [Id] = @Id;
             ";
             var role = await DbConnection.QuerySingleOrDefaultAsync<TRole>(sql, new { Id = roleId });
@@ -66,7 +66,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<TRole> FindByNameAsync(string normalizedName) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetRoles]
+                FROM [AspNetRoles]
                 WHERE [NormalizedName] = @NormalizedName;
             ";
             var role = await DbConnection.QuerySingleOrDefaultAsync<TRole>(sql, new { NormalizedName = normalizedName });
@@ -76,7 +76,7 @@ namespace AspNetCore.Identity.Dapper
         /// <inheritdoc/>
         public virtual async Task<bool> UpdateAsync(TRole role, IList<TRoleClaim> claims = null) {
             const string updateRoleSql = @"
-                UPDATE [dbo].[AspNetRoles]
+                UPDATE [AspNetRoles]
                 SET [Name] = @Name, [NormalizedName] = @NormalizedName, [ConcurrencyStamp] = @ConcurrencyStamp
                 WHERE [Id] = @Id;
             ";
@@ -90,14 +90,14 @@ namespace AspNetCore.Identity.Dapper
                 if (claims?.Count() > 0) {
                     const string deleteClaimsSql = @"
                         DELETE
-                        FROM [dbo].[AspNetRoleClaims]
+                        FROM [AspNetRoleClaims]
                         WHERE [RoleId] = @RoleId;
                     ";
                     await DbConnection.ExecuteAsync(deleteClaimsSql, new {
                         RoleId = role.Id
                     }, transaction);
                     const string insertClaimsSql = @"
-                        INSERT INTO [dbo].[AspNetRoleClaims] (RoleId, ClaimType, ClaimValue)
+                        INSERT INTO [AspNetRoleClaims] (RoleId, ClaimType, ClaimValue)
                         VALUES (@RoleId, @ClaimType, @ClaimValue);
                     ";
                     await DbConnection.ExecuteAsync(insertClaimsSql, claims.Select(x => new {

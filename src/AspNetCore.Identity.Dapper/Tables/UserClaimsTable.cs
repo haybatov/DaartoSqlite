@@ -26,7 +26,7 @@ namespace AspNetCore.Identity.Dapper
         public virtual async Task<IEnumerable<TUserClaim>> GetClaimsAsync(TKey userId) {
             const string sql = @"
                 SELECT *
-                FROM [dbo].[AspNetUserClaims]
+                FROM [AspNetUserClaims]
                 WHERE [UserId] = @UserId;
             ";
             var userClaims = await DbConnection.QueryAsync<TUserClaim>(sql, new { UserId = userId });
